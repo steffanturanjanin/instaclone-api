@@ -11,6 +11,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
+    private $id;
     private $username;
     private $email;
     private $profile_picture;
@@ -18,6 +19,10 @@ class User extends Authenticatable
     private $followers;
     private $following;
     private $posts;
+
+    public function photos() {
+        return $this->hasMany('App\Photo');
+    }
 
     /**
      * The attributes that are mass assignable.

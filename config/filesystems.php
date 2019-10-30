@@ -45,10 +45,17 @@ return [
 
         'local' => [
             'driver' => 'local',
-            //'root' => storage_path('app'),
-            'root' => public_path(),
-            'url' => env('APP_URL').'/public',
-            'visibility' => 'public'
+            'root' => storage_path('app/photos'),
+            'permissions' => [
+                'file' => [
+                    'public' => 0664,
+                    'private' => 0600,
+                ],
+                'dir' => [
+                    'public' => 0775,
+                    'private' => 0700,
+                ],
+            ],
         ],
 
         'public' => [

@@ -3,21 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     public function signup(Request $request) {
-        $request->validate([
+       /* $request->validate([
            'username' => 'required|string|unique:users',
            'email' => 'required|string|email|unique:users',
            'password' => 'required|string|confirmed'
+        ]);*/
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|unique:users',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|confirmed'
         ]);
+
+        if ($validator->fails()) {
+
+            return response()->json($validator->errors(), 422);
+        }
 
         $user = new User([
            'username' => $request->username,
@@ -28,7 +41,8 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Successfully created user!'
+            'email' => $user->email,
+            "id" => $user->id,
         ], 201);
     }
 
@@ -42,7 +56,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['errors' =>['authentication' => 'Incorrect email or password']], 401);
         }
 
         $user = $request->user();
@@ -56,10 +70,15 @@ class AuthController extends Controller
 
         $token->save();
 
+        $user = User::where('email', $request->email)->first();
+
         return response()->json([
+
+            'user' => new UserResource($user),
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
+
         ]);
     }
 
