@@ -45,6 +45,9 @@ Route::prefix('auth')->group(function () {
 });*/
 
 Route::post('photo', 'PhotoController@store');
+Route::get('photo', 'PhotoController@index');
+
+Route::get('photo/{id}/comment', 'CommentController@index');
 
 /*Route::group([
     'prefix' => 'auth'
