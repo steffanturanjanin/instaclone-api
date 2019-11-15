@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Like;
 use Illuminate\Http\Request;
+use App\Http\Resources\Like as LikeResource;
+use App\Photo;
 
 class LikeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $photo = Photo::find($id);
+        return LikeResource::collection($photo->likes);
     }
 
     /**
@@ -31,22 +34,38 @@ class LikeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return LikeResource
      */
     public function store(Request $request)
     {
-        //
+        $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id', '=', $request->user_id]])->first();
+        if ($like === null) {
+            $like = new Like;
+            $like->photo_id = $request->photo_id;
+            $like->user_id = $request->user_id;
+
+            $like->save();
+            return new LikeResource($like);
+        }
+        return null;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Like  $like
-     * @return \Illuminate\Http\Response
+     * @param $photo_id
+     * @param $user_id
+     * @return LikeResource
      */
-    public function show(Like $like)
+    public function show($photo_id, $user_id)
     {
-        //
+        //dd((int)$photo_id, (int)$user_id);
+        $like = Like::where([['photo_id' , "=", (int)$photo_id], ['user_id', '=', (int)$user_id]])->first();
+        if ($like !== null) {
+            return new LikeResource($like);
+        }
+
+        return response()->json(['data' => false]);
     }
 
     /**
@@ -75,11 +94,17 @@ class LikeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Like  $like
-     * @return \Illuminate\Http\Response
+     * @param  $request
+     * @return LikeResource
      */
-    public function destroy(Like $like)
+    public function destroy(Request $request)
     {
-        //
+        $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id',  '=', $request->user_id]])->first();
+        if ($like !== null) {
+            $like->delete();
+
+            return new LikeResource($like);
+        }
+        return response()->json(['data' => false]);
     }
 }

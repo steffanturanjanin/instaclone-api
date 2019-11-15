@@ -21,6 +21,7 @@ class CreateLikesTable extends Migration
 
             $table->foreign('photo_id')->references('id')->on('photos')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unique(['photo_id', 'user_id']);
         });
     }
 

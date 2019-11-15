@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\User as UserResource;
+use App\User;
 
 class Like extends JsonResource
 {
@@ -17,7 +19,7 @@ class Like extends JsonResource
         return [
             'id' => $this->id,
             'photo_id' => $this->photo_id,
-            'user_id' => $this->user_id
+            'user' => new UserResource(User::find($this->user_id))
         ];
     }
 }

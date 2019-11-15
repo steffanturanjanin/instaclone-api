@@ -18,7 +18,7 @@ class CreateCommentsTable extends Migration
             $table->string('content');
             $table->integer('photo_id');
             $table->integer('user_id');
-            $table->integer('likes');
+            $table->integer('likes')->default(0);
             $table->timestamps();
 
             $table->foreign('photo_id')->references('id')->on('photos')->onDelete('cascade');

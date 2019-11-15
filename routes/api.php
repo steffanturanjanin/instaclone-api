@@ -47,7 +47,17 @@ Route::prefix('auth')->group(function () {
 Route::post('photo', 'PhotoController@store');
 Route::get('photo', 'PhotoController@index');
 
-Route::get('photo/{id}/comment', 'CommentController@index');
+Route::get('photo/{id}/comment', 'CommentController@index'); //change this to comment/photo/{id}
+
+Route::get('user/{id}', 'UserController@index');
+
+
+Route::delete('like', 'LikeController@destroy');
+Route::post('like', 'LikeController@store');
+Route::get('like/{photo_id}', 'LikeController@index');
+Route::get('like/photo/{photo_id}/user/{user_id}', 'LikeController@show');
+
+Route::post('comment', 'CommentController@store');
 
 /*Route::group([
     'prefix' => 'auth'
