@@ -17,58 +17,32 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-/*Route::middleware('cors')->group([
-    'prefix' => 'auth'
-], function () {
-    Route::post('login', 'AuthController@login');
-    Route::post('signup', 'AuthController@signup');
-
-    Route::middleware('auth:api')->group(
-        function () {
-            Route::get('logout', 'AuthController@logout');
-            Route::get('user', 'AuthController@user');
-        });
-});*/
 
 Route::prefix('auth')->group(function () {
    Route::post('login', 'AuthController@login');
    Route::post('signup', 'AuthController@signup');
 
    Route::middleware(['auth:api'])->group(function () {
-       Route::get('logout', 'AuthController@logout');
+       Route::post('logout', 'AuthController@logout');
        Route::get('user', 'AuthController@user');
    });
 });
 
-/*Route::middleware(['auth:api'])->group(function () {
-    Route::post('photo', 'PhotoController@store');
-});*/
 
-Route::post('photo', 'PhotoController@store');
-Route::get('photo', 'PhotoController@index');
+Route::middleware(['auth:api'])->group(function () {
+    Route::get('users/{id}', 'UserController@index');
 
-Route::get('photo/{id}/comment', 'CommentController@index'); //change this to comment/photo/{id}
+    Route::delete('likes', 'LikeController@destroy');
+    Route::post('likes', 'LikeController@store');
 
-Route::get('user/{id}', 'UserController@index');
+    Route::post('photos', 'PhotoController@store');
+    Route::get('photos', 'PhotoController@index');
 
+    Route::post('comments', 'CommentController@store');
 
-Route::delete('like', 'LikeController@destroy');
-Route::post('like', 'LikeController@store');
-Route::get('like/{photo_id}', 'LikeController@index');
-Route::get('like/photo/{photo_id}/user/{user_id}', 'LikeController@show');
+    Route::get('photos/{id}/comments', 'CommentController@index');
 
-Route::post('comment', 'CommentController@store');
+    Route::get('photos/{photo_id}/likes', 'LikeController@index');
+    Route::get('photos/{photo_id}/likes/user', 'LikeController@show');
 
-/*Route::group([
-    'prefix' => 'auth'
-], function () {
-   Route::post('login', 'AuthController@login');
-   Route::post('signup', 'AuthController@signup');
-
-   Route::group([
-       'middleware' => 'auth:api'
-       ], function () {
-       Route::get('logout', 'AuthController@logout');
-       Route::get('user', 'AuthController@user');
-   });
-});*/
+});

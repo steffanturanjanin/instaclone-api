@@ -39,17 +39,15 @@ class PhotoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'photo' => 'required|:jpeg,jpg,png',
-            'user_id' => 'required',
+            'photo' => 'required|:jpeg,jpg,png'
         ]);
-
 
         $name = Storage::disk('local')->put('/', $request->photo);
 
         $photo = new Photo;
         $photo->name = $name;
         $photo->description = $request->description;
-        $photo->user_id = $request->user_id;
+        $photo->user_id = $request->user()->id;
 
         $photo->save();
 

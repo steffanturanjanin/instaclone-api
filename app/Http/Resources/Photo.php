@@ -29,7 +29,8 @@ class Photo extends JsonResource
             'user_id' => $this->user_id,
             'likes' => $like_number,
             'comments' => $comment_number,
-            'content' => base64_encode(Storage::get($this->name))
+            'content' => base64_encode(Storage::get($this->name)),
+            'created_at' => $this->created_at->toIso8601String()
         ];
     }
 }

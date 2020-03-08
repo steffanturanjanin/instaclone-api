@@ -27,6 +27,7 @@ class Comment extends JsonResource
                 'profile_picture' => $user->profile_picture === null ? null : base64_encode(Storage::get($this->profile_picture)),
             ],
             'likes' => $this->likes,
+            'created_at' => $this->created_at->toIso8601String()
         ];
     }
 }

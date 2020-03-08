@@ -6,6 +6,7 @@ use App\Like;
 use Illuminate\Http\Request;
 use App\Http\Resources\Like as LikeResource;
 use App\Photo;
+use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
@@ -38,11 +39,13 @@ class LikeController extends Controller
      */
     public function store(Request $request)
     {
-        $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id', '=', $request->user_id]])->first();
+        //dd($request);
+
+        $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id', '=', $request->user()->id]])->first();
         if ($like === null) {
             $like = new Like;
             $like->photo_id = $request->photo_id;
-            $like->user_id = $request->user_id;
+            $like->user_id = $request->user()->id;
 
             $like->save();
             return new LikeResource($like);
@@ -53,14 +56,13 @@ class LikeController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param Request $request
      * @param $photo_id
-     * @param $user_id
      * @return LikeResource
      */
-    public function show($photo_id, $user_id)
+    public function show(Request $request, $photo_id)
     {
-        //dd((int)$photo_id, (int)$user_id);
-        $like = Like::where([['photo_id' , "=", (int)$photo_id], ['user_id', '=', (int)$user_id]])->first();
+        $like = Like::where([['photo_id' , "=", (int)$photo_id], ['user_id', '=', $request->user()->id]])->first();
         if ($like !== null) {
             return new LikeResource($like);
         }
@@ -99,7 +101,8 @@ class LikeController extends Controller
      */
     public function destroy(Request $request)
     {
-        $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id',  '=', $request->user_id]])->first();
+        //dd(Auth::user());
+        $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id',  '=', $request->user()->id]])->first();
         if ($like !== null) {
             $like->delete();
 
