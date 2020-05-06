@@ -30,6 +30,11 @@ Route::prefix('auth')->group(function () {
 
 
 Route::middleware(['auth:api'])->group(function () {
+    Route::get('users/followers', 'UserController@getFollows');
+    Route::post('users/followings', 'UserController@follow');
+    Route::get('users/followings', 'UserController@getFollowings');
+    Route::get('users/followings', 'UserController@getFollowings');
+    Route::delete('users/followings', 'UserController@deleteFollowings');
     Route::get('users/{id}', 'UserController@index');
 
     Route::delete('likes', 'LikeController@destroy');

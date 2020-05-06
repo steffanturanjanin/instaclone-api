@@ -19,6 +19,48 @@ class UserController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function follow(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $request->user()->followings()->attach($request->user_id);
+
+        return response()->json(new UserResource($user));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFollows(Request $request)
+    {
+        return response()->json(UserResource::collection($request->user()->follows));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFollowings(Request $request)
+    {
+        return response()->json(UserResource::collection($request->user()->followings));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteFollowings(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $request->user()->followings()->detach($request->user_id);
+
+        return response()->json(new UserResource($user));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

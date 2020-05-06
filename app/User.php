@@ -24,6 +24,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Photo');
     }
 
+    public function follows() {
+        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id');
+    }
+
+    public function followings() {
+        return $this->belongsToMany('App\User', 'followers', 'follower_id', 'user_id');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
