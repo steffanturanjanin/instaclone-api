@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Resources\User as UserResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +15,8 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json(new UserResource($request->user()));
 });
-
 
 Route::prefix('auth')->group(function () {
    Route::post('login', 'AuthController@login');
@@ -27,7 +27,6 @@ Route::prefix('auth')->group(function () {
        Route::get('user', 'AuthController@user');
    });
 });
-
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('users/followers', 'UserController@getFollows');

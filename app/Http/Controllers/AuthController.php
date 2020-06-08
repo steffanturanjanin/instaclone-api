@@ -5,21 +5,13 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     public function signup(Request $request) {
-       /* $request->validate([
-           'username' => 'required|string|unique:users',
-           'email' => 'required|string|email|unique:users',
-           'password' => 'required|string|confirmed'
-        ]);*/
 
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|unique:users',
@@ -88,6 +80,6 @@ class AuthController extends Controller
     }
 
     public function user(Request $request) {
-        return response()->json($request->user());
+        return response()->json(new UserResource($request->user()));
     }
 }

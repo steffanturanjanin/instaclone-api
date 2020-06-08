@@ -6,7 +6,6 @@ use App\Like;
 use Illuminate\Http\Request;
 use App\Http\Resources\Like as LikeResource;
 use App\Photo;
-use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
@@ -18,17 +17,8 @@ class LikeController extends Controller
     public function index($id)
     {
         $photo = Photo::find($id);
-        return LikeResource::collection($photo->likes);
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return LikeResource::collection($photo->likes);
     }
 
     /**
@@ -39,8 +29,6 @@ class LikeController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request);
-
         $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id', '=', $request->user()->id]])->first();
         if ($like === null) {
             $like = new Like;
@@ -71,29 +59,6 @@ class LikeController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Like  $like
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Like $like)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Like  $like
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Like $like)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  $request
@@ -101,13 +66,14 @@ class LikeController extends Controller
      */
     public function destroy(Request $request)
     {
-        //dd(Auth::user());
         $like = Like::where([['photo_id', '=', $request->photo_id], ['user_id',  '=', $request->user()->id]])->first();
+
         if ($like !== null) {
             $like->delete();
 
             return new LikeResource($like);
         }
+
         return response()->json(['data' => false]);
     }
 }

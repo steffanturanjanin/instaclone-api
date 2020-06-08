@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use http\Env\Response;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 use App\Like;
@@ -18,7 +17,6 @@ class Photo extends JsonResource
      */
     public function toArray($request)
     {
-
         $comment_number = Comment::where('photo_id', $this->id)->count();
         $like_number = Like::where('photo_id', $this->id)->count();
 
